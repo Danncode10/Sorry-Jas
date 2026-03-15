@@ -16,7 +16,9 @@ export default function Home() {
   const yesScale = 1 + noClicks * 0.25;
   const noScale = Math.max(0.1, 1 - noClicks * 0.1);
 
-  // Final stage constant
+  // Constants based on config
+  const MEME_LIST = CONFIG.assets.memes;
+  const MEME_COUNT = MEME_LIST.length;
   const FINAL_STAGE = CONFIG.apologyMessages.length - 1;
 
   // Automatically move the button in the very last stage
@@ -34,8 +36,7 @@ export default function Home() {
     // If it's a manual click and we are already at the final stage, do nothing
     if (!isAuto && noClicks >= FINAL_STAGE) return;
     
-    // Stop manual clicks after memeCount but before final ghost stage if configured differently
-    // Actually, let's just let it progress until FINAL_STAGE
+    // Stop manual clicks after meme list is exhausted
     if (noClicks > FINAL_STAGE) return;
 
     // 1. Get the current occupied space of the YES button
@@ -69,8 +70,8 @@ export default function Home() {
   };
 
   // The current meme to display Based on progress
-  const currentMemeIndex = Math.min(noClicks + 1, CONFIG.memeCount);
-  const memePath = `/assets/${CONFIG.assets.memePrefix}${currentMemeIndex}.jpg`;
+  const currentMemeIndex = Math.min(noClicks, MEME_COUNT - 1);
+  const memePath = MEME_LIST[currentMemeIndex];
 
   if (isAccepted) {
     return (
@@ -80,7 +81,7 @@ export default function Home() {
           animate={{ scale: 1 }}
           transition={{ type: "spring", damping: 15 }}
         >
-          <Image
+          <img
             src={CONFIG.assets.successGif}
             alt="Success"
             width={400}
@@ -106,12 +107,10 @@ export default function Home() {
           className="flex flex-col items-center gap-8 text-center"
         >
           <div className="relative h-64 w-64 md:h-80 md:w-80">
-            <Image
+            <img
               src={memePath}
-              alt={`Meme ${currentMemeIndex}`}
-              fill
-              className="rounded-3xl object-cover shadow-xl"
-              priority
+              alt={`Meme ${currentMemeIndex + 1}`}
+              className="h-full w-full rounded-3xl object-cover shadow-xl"
             />
           </div>
 

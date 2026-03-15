@@ -5,15 +5,17 @@
 // This is the ONLY file you need to edit to personalize the apology page.
 // =============================================================
 
+const TARGET_NAME = "Jas";
+
 export const CONFIG = {
   // ── The person you're apologizing to ──────────────────────
-  targetName: "Jas",
+  targetName: TARGET_NAME,
 
   // ── Messages shown on the page (Progressive) ────────────────
   apologyMessages: [
-    `Sorry na ${this.targetName}, patawarin mo na ako 🥺`,
+    `Sorry na ${TARGET_NAME}, patawarin mo na ako 🥺`,
     "Hala, bakit mo pinindot yung No? 👉👈",
-    `Sige na ${this.targetName}, bati na tayo please? 🍎`,
+    `Sige na ${TARGET_NAME}, bati na tayo please? 🍎`,
     "Sendan na lang kita ng maraming cute vids, bati na tayo? 🐱",
     "Isang smile lang diyan, okay na ako... Sige na? 😔",
     "Galit ka pa ba? Sorry na nga eh... Huhu 😭",
@@ -23,10 +25,6 @@ export const CONFIG = {
   ],
   successMessage: "Yey! I love you! ❤️ ",
 
-  // ── Number of memes (must match files in public/assets/) ──
-  // Memes should be named: meme1.jpg, meme2.jpg, ... meme8.jpg
-  memeCount: 8,
-
   // ── Button & background colors (Tailwind CSS class names) ─
   colors: {
     yesButton: "bg-green-500",
@@ -34,9 +32,20 @@ export const CONFIG = {
     background: "bg-pink-50",
   },
 
-  // ── Asset paths (relative to the /public folder) ──────────
+  // ── Asset paths (Local /assets/ folder OR External URLs) ──
+  // You can use direct links from Tenor, Giphy, or any image URL here!
   assets: {
-    memePrefix: "meme",            // memes named meme1.jpg, meme2.jpg, etc.
-    successGif: "/assets/success-gif.gif",
+    memes: [
+      "/assets/meme1.jpg",      // Local
+      "https://media.tenor.com/7123T9b_kYsAAAAC/cat-cute.gif", // Remote GIF example
+      "/assets/meme3.jpg",
+      "/assets/meme4.jpg",
+      "/assets/meme5.jpg",
+      "/assets/meme6.jpg",
+      "/assets/meme7.jpg",
+      "/assets/meme8.jpg",
+      "https://media.tenor.com/p_T5G-2qJmMAAAAC/cat-dance.gif", // Another remote GIF
+    ],
+    successGif: "https://media.tenor.com/gO_S-9_v9_MAAAAC/peach-goma-peach-and-goma.gif",
   },
 };

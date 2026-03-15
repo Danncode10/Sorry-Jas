@@ -62,50 +62,46 @@ sorry-jas/
 
 ```ts
 // app/config.ts
-export const CONFIG = {
-  targetName: "Jas",                          // 💬 Change to her name
-  apologyMessage: "Sorry na, patawarin mo na ako 🥺",  // 💬 Your apology text
-  successMessage: "Yey! I love you! ❤️",     // 💬 Message shown on forgiveness
+const TARGET_NAME = "Jas";
 
-  memeCount: 8,                               // 🖼️ Number of meme files (meme1.jpg … meme8.jpg)
+export const CONFIG = {
+  targetName: TARGET_NAME,
+  
+  apologyMessages: [
+    `Sorry na ${TARGET_NAME}, patawarin mo na ako 🥺`,
+    "Hala, bakit mo pinindot yung No? 👉👈",
+    // ... add as many as you want!
+  ],
+
+  successMessage: "Yey! I love you! ❤️",
 
   colors: {
-    yesButton: "bg-green-500",  // 💚 Tailwind class for the "Yes" button
-    noButton: "bg-red-500",     // ❤️ Tailwind class for the "No" button
-    background: "bg-pink-50",   // 🌸 Tailwind class for the page background
+    yesButton: "bg-green-500",
+    noButton: "bg-red-500",
+    background: "bg-pink-50",
   },
 
   assets: {
-    memePrefix: "meme",                       // 🖼️ Prefix of meme filenames
-    successGif: "/assets/success-gif.gif",    // 🎉 Path to the success gif
+    // You can use LOCAL paths (from public/assets/) 
+    // OR EXTERNAL URLs (Tenor, Giphy, etc.)
+    memes: [
+      "/assets/meme1.jpg", 
+      "https://media.tenor.com/7123T9b_kYsAAAAC/cat-cute.gif",
+      "https://example.com/your-image.png"
+    ],
+    successGif: "https://media.tenor.com/gO_S-9_v9_MAAAAC/peach-goma-peach-and-goma.gif",
   },
 };
 ```
 
-> **Tip:** All color values use standard [Tailwind CSS utility classes](https://tailwindcss.com/docs/background-color).  
-> You can use any `bg-*` class, e.g. `bg-purple-400`, `bg-rose-600`, etc.
-
 ---
 
-## 🎨 Tailwind CSS v4 — Theme Configuration
+## 🖼️ How to use Tenor GIFs
 
-> ⚠️ **This project uses Tailwind CSS v4**, which uses a **CSS-first configuration** approach.  
-> There is **no `tailwind.config.js`** file. All custom theme tokens are defined in `app/globals.css` using the `@theme` block.
-
-To customize the design system (colors, fonts, spacing), edit the `@theme` section in `app/globals.css`:
-
-```css
-/* app/globals.css */
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-
-  --color-pink-500: #ec4899;   /* ← change brand pink here */
-  --color-yes: #22c55e;        /* ← yes button color */
-  --color-no:  #ef4444;        /* ← no button color */
-}
-```
-
-> **Note:** The `@theme` at-rule is a Tailwind v4 feature. Your IDE may show an "unknown at-rule" warning — this is a **false positive** and can be safely ignored. The project compiles correctly.
+1. Go to [Tenor.com](https://tenor.com/) and find a GIF.
+2. **Right-click** the GIF and select **"Copy Image Address"**.
+   - The link should look like: `https://media.tenor.com/.../anything.gif`
+3. Paste that link directly into the `memes` array in your `config.ts`.
 
 ---
 
@@ -114,39 +110,17 @@ To customize the design system (colors, fonts, spacing), edit the `@theme` secti
 ```text
 sorry-jas/
 ├── app/
-│   ├── config.ts       ← ✏️  YOUR customization file (create this!)
+│   ├── config.ts       ← ✏️  YOUR customization file
 │   ├── globals.css     ← 🎨  Tailwind v4 theme tokens
 │   ├── layout.tsx
 │   └── page.tsx
 ├── public/
-│   └── assets/
-│       ├── meme1.jpg
-│       ├── meme2.jpg
-│       ├── ...
-│       ├── meme8.jpg
-│       └── success-gif.gif
+│   └── assets/         ← 🖼️  Place local images here
 ├── .gitignore
 ├── next.config.ts
 ├── package.json
-├── postcss.config.mjs
 └── tsconfig.json
 ```
-
----
-
-## 🖼️ Adding Your Memes
-
-Place your meme images inside `public/assets/` and name them sequentially:
-
-```
-public/assets/meme1.jpg
-public/assets/meme2.jpg
-...
-public/assets/meme8.jpg
-public/assets/success-gif.gif
-```
-
-> If you have more or fewer memes, update `memeCount` in `config.ts` to match.
 
 ---
 
