@@ -49,5 +49,6 @@ export const CONFIG = {
   sounds: {
     teleport: "/assets/sounds/rizz.mp3", // Rizz sound
     success: "/assets/sounds/happy.mp3",  // Happy song (looping)
+    lastSlide: "/assets/sounds/last_slide_sound.mp3", // Final plea sound (looping)
   },
 };

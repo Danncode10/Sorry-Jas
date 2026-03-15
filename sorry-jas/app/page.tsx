@@ -131,6 +131,7 @@ export default function Home() {
   const [hasMoved, setHasMoved] = useState(false);
   const yesButtonRef = useRef<HTMLButtonElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
+  const lastSlideAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Responsive scaling
   const [isMobile, setIsMobile] = useState(false);
@@ -155,12 +156,19 @@ export default function Home() {
   // Automatically move the button in the very last stage
   useEffect(() => {
     if (noClicks >= FINAL_STAGE && !isAccepted) {
+      // Play last slide sound in loop
+      if (!lastSlideAudioRef.current) {
+        lastSlideAudioRef.current = new Audio(CONFIG.sounds.lastSlide);
+        lastSlideAudioRef.current.loop = true;
+        lastSlideAudioRef.current.play().catch(() => {});
+      }
+
       const interval = setInterval(() => {
         teleportNoButton(true);
       }, 600);
       return () => clearInterval(interval);
     }
-  }, [noClicks, isAccepted]);
+  }, [noClicks, isAccepted, FINAL_STAGE]);
 
   // Randomly teleport the "No" button
   const teleportNoButton = (isAuto = false) => {
@@ -220,6 +228,12 @@ export default function Home() {
   };
 
   const handleYesClick = () => {
+    // Stop last slide audio if it's playing
+    if (lastSlideAudioRef.current) {
+      lastSlideAudioRef.current.pause();
+      lastSlideAudioRef.current = null;
+    }
+
     setIsAccepted(true);
     // Play happy sound in a loop
     const audio = new Audio(CONFIG.sounds.success);
