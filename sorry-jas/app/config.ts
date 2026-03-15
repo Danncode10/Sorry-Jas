@@ -20,7 +20,7 @@ export const CONFIG = {
     "Last chance na 'to... Bati na tayo? ❤️",
     "Patawarin mo na kasi ako 😝",
   ],
-  successMessage: "Yey! I love you! ❤️ ",
+  successMessage: "Yey! bati na kami ❤️ ",
 
   // ── Button & background colors (Tailwind CSS class names) ─
   colors: {

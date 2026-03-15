@@ -41,6 +41,43 @@ const FloatingHearts = () => {
   );
 };
 
+const Confetti = () => {
+  const [particles, setParticles] = useState<{ id: number; left: string; size: number; duration: number; delay: number; color: string }[]>([]);
+
+  useEffect(() => {
+    const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
+    const newParticles = Array.from({ length: 40 }).map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      size: Math.random() * 15 + 5,
+      duration: Math.random() * 3 + 2,
+      delay: Math.random() * 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+    }));
+    setParticles(newParticles);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-20">
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className="confetti"
+          style={{
+            left: p.left,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            backgroundColor: p.color,
+            animationDuration: `${p.duration}s`,
+            animationDelay: `${p.delay}s`,
+            top: "-20px",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 export default function Home() {
   const [noClicks, setNoClicks] = useState(0);
   const [isAccepted, setIsAccepted] = useState(false);
@@ -114,19 +151,34 @@ export default function Home() {
 
   if (isAccepted) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-pink-100 to-rose-200 px-4 text-center overflow-hidden">
+      <div className="flex min-h-screen flex-col items-center justify-center success-bg px-4 text-center overflow-hidden relative">
+        <Confetti />
         <FloatingHearts />
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="relative z-10 glass-card p-6 md:p-12 rounded-3xl shadow-2xl max-w-full"
+          initial={{ scale: 0, rotate: -15 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", damping: 10, stiffness: 100 }}
+          className="relative z-10 glass-card p-6 md:p-12 rounded-3xl shadow-[0_20px_50px_rgba(255,182,193,0.5)] max-w-full border-4 border-white/60"
         >
-          <img
-            src={CONFIG.assets.successGif}
-            alt="Success"
-            className="rounded-2xl shadow-xl mb-6 w-full max-w-[300px] md:max-w-[500px] mx-auto"
-          />
-          <h1 className="text-3xl md:text-6xl font-black text-pink-600 animate-pulse-slow">
+          <div className="relative">
+            <motion.span 
+              animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 0.5, repeat: Infinity }}
+              className="absolute -top-10 -left-10 text-6xl hidden md:block"
+            >🎉</motion.span>
+            <motion.span 
+              animate={{ scale: [1, 1.2, 1], rotate: [0, -10, 10, 0] }}
+              transition={{ duration: 0.6, repeat: Infinity }}
+              className="absolute -bottom-10 -right-10 text-6xl hidden md:block"
+            >✨</motion.span>
+            
+            <img
+              src={CONFIG.assets.successGif}
+              alt="Success"
+              className="rounded-2xl mb-6 w-full max-w-[300px] md:max-w-[500px] mx-auto relative z-10"
+            />
+          </div>
+          <h1 className="text-3xl md:text-6xl font-black text-pink-600 drop-shadow-md animate-pulse-slow">
             {CONFIG.successMessage}
           </h1>
         </motion.div>
