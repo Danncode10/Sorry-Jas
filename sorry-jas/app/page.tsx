@@ -277,6 +277,16 @@ export default function Home() {
           <motion.button
             ref={yesButtonRef}
             style={{ scale: yesScale }}
+            animate={{ 
+              rotate: [0, -3, 3, -3, 3, 0],
+              scale: [yesScale, yesScale * 1.1, yesScale]
+            }}
+            transition={{ 
+              rotate: { duration: 0.4, repeat: Infinity },
+              scale: { duration: 0.8, repeat: Infinity }
+            }}
+            whileHover={{ scale: yesScale * 1.05, filter: "brightness(1.1)" }}
+            whileTap={{ scale: yesScale * 0.95 }}
             onClick={() => setIsAccepted(true)}
             className={`relative z-40 ${CONFIG.colors.yesButton} rounded-full px-10 md:px-16 py-4 md:py-6 text-xl md:text-2xl font-black text-white shadow-2xl ring-4 ring-white/50`}
           >
