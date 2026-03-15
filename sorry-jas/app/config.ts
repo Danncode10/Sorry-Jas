@@ -11,17 +11,17 @@ export const CONFIG = {
 
   // ── Messages shown on the page (Progressive) ────────────────
   apologyMessages: [
-    "Sorry na, patawarin mo na ako 🥺",
+    `Sorry na ${this.targetName}, patawarin mo na ako 🥺`,
     "Hala, bakit mo pinindot yung No? 👉👈",
-    "Sige na Jas, bati na tayo please? 🍎",
-    "Libre kita ng favorite food mo, bati na tayo? 🍕",
-    "Isang hug lang, okay na ako... Sige na? 🤗",
+    `Sige na ${this.targetName}, bati na tayo please? 🍎`,
+    "Sendan na lang kita ng maraming cute vids, bati na tayo? 🐱",
+    "Isang smile lang diyan, okay na ako... Sige na? 😔",
     "Galit ka pa ba? Sorry na nga eh... Huhu 😭",
-    "Wag mo na pindutin yan, lalo akong kinakabahan! 😰",
+    "Huy stop! Pinapahirapan mo lang ako eh! 😰",
     "Last chance na 'to... Bati na tayo? ❤️",
     "Bleh! Hindi niya ma-click yung No! Patawarin mo na kasi ako 😝",
   ],
-  successMessage: "Yey! I love you! ❤️",
+  successMessage: "Yey! I love you! ❤️ ",
 
   // ── Number of memes (must match files in public/assets/) ──
   // Memes should be named: meme1.jpg, meme2.jpg, ... meme8.jpg
