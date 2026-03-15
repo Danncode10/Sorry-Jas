@@ -129,6 +129,8 @@ export default function Home() {
   const [isAccepted, setIsAccepted] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false);
+  const [isAssetsLoaded, setIsAssetsLoaded] = useState(false);
+  
   const yesButtonRef = useRef<HTMLButtonElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const lastSlideAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -142,6 +144,40 @@ export default function Home() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Asset Preloading Logic
+  useEffect(() => {
+    const preloadAssets = async () => {
+      const imageAssets = [...CONFIG.assets.memes, CONFIG.assets.successGif];
+      const soundAssets = Object.values(CONFIG.sounds);
+
+      const imagePromises = imageAssets.map((src) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = resolve;
+          img.onerror = resolve; // Continue even if one fails
+        });
+      });
+
+      const soundPromises = soundAssets.map((src) => {
+        return new Promise((resolve) => {
+          const audio = new Audio();
+          audio.src = src;
+          audio.oncanplaythrough = resolve;
+          audio.onerror = resolve; // Continue even if one fails
+          // Audio elements need to be loaded explicitly in some browsers
+          audio.load();
+        });
+      });
+
+      await Promise.all([...imagePromises, ...soundPromises]);
+      // Small artificial delay for smooth transition
+      setTimeout(() => setIsAssetsLoaded(true), 800);
+    };
+
+    preloadAssets();
+  }, []);
+
   // Scaling factors - Slightly toned down for mobile
   const growthFactor = isMobile ? 0.15 : 0.25;
   const maxYesScale = isMobile ? 2 : 4;
@@ -153,9 +189,69 @@ export default function Home() {
   const MEME_COUNT = MEME_LIST.length;
   const FINAL_STAGE = CONFIG.apologyMessages.length - 1;
 
+  if (!isAssetsLoaded) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-pink-50 to-rose-100 text-center">
+        <FloatingHearts />
+        <motion.div
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           className="relative z-10 flex flex-col items-center gap-6"
+        >
+          <motion.div
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            className="text-8xl"
+          >
+            💖
+          </motion.div>
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl font-black text-pink-600 uppercase tracking-widest">
+              Preparing the Rizz...
+            </h2>
+            <div className="h-2 w-48 bg-pink-100 rounded-full overflow-hidden">
+               <motion.div 
+                 initial={{ width: 0 }}
+                 animate={{ width: "100%" }}
+                 transition={{ duration: 3 }}
+                 className="h-full bg-pink-500"
+               />
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (isAccepted) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center success-bg px-4 text-center overflow-hidden relative">
+        <Confetti />
+        <FloatingHearts />
+        <FloatingCats />
+        
+        <motion.div
+           initial={{ scale: 0 }}
+           animate={{ scale: 1 }}
+           transition={{ type: "spring", damping: 10, stiffness: 100 }}
+           className="relative z-10 flex flex-col items-center"
+        >
+          <img
+            src={CONFIG.assets.successGif}
+            alt="Success"
+            className="w-full max-w-[300px] md:max-w-[500px] mx-auto relative z-10 mb-8 drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]"
+          />
+          <h1 className="text-5xl md:text-8xl font-black text-white drop-shadow-[0_5px_15px_rgba(219,39,119,0.8)] animate-pulse-slow">
+            {CONFIG.successMessage}
+          </h1>
+        </motion.div>
+      </div>
+    );
+  }
+
   // Automatically move the button in the very last stage
   useEffect(() => {
-    if (noClicks >= FINAL_STAGE && !isAccepted) {
+    if (noClicks >= FINAL_STAGE && !isAccepted && isAssetsLoaded) {
       // Play last slide sound in loop
       if (!lastSlideAudioRef.current) {
         lastSlideAudioRef.current = new Audio(CONFIG.sounds.lastSlide);
@@ -168,7 +264,7 @@ export default function Home() {
       }, 600);
       return () => clearInterval(interval);
     }
-  }, [noClicks, isAccepted, FINAL_STAGE]);
+  }, [noClicks, isAccepted, FINAL_STAGE, isAssetsLoaded]);
 
   // Randomly teleport the "No" button
   const teleportNoButton = (isAuto = false) => {
