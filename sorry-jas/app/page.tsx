@@ -379,44 +379,50 @@ export default function Home() {
           </motion.div>
         </AnimatePresence>
 
-        <div className="mt-12 md:mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-20 w-full relative min-h-[150px]">
-          <motion.button
-            ref={yesButtonRef}
-            style={{ scale: yesScale }}
-            animate={{ 
-              rotate: [0, -3, 3, -3, 3, 0],
-              scale: [yesScale, yesScale * 1.1, yesScale]
-            }}
-            transition={{ 
-              rotate: { duration: 0.4, repeat: Infinity },
-              scale: { duration: 0.8, repeat: Infinity }
-            }}
-            whileHover={{ scale: yesScale * 1.05, filter: "brightness(1.1)" }}
-            whileTap={{ scale: yesScale * 0.95 }}
-            onClick={handleYesClick}
-            className={`relative z-40 ${CONFIG.colors.yesButton} rounded-full px-10 md:px-16 py-4 md:py-6 text-xl md:text-2xl font-black text-white shadow-2xl ring-4 ring-white/50`}
-          >
-            Yes 💖
-          </motion.button>
-
-          {!isAccepted && (
+        <div className="mt-12 md:mt-16 flex flex-col sm:flex-row items-center justify-center gap-16 md:gap-32 w-full min-h-[200px]">
+          {/* Stable Yes Button Slot */}
+          <div className="flex-1 flex justify-center items-center">
             <motion.button
-              animate={hasMoved ? { 
-                left: `${noButtonPos.x}%`, 
-                top: `${noButtonPos.y}%`,
-                position: 'fixed' as const,
-                translateX: "-50%",
-                translateY: "-50%"
-              } : {
-                position: 'relative' as const
+              ref={yesButtonRef}
+              style={{ scale: yesScale }}
+              animate={{ 
+                rotate: [0, -3, 3, -3, 3, 0],
+                scale: [yesScale, yesScale * 1.1, yesScale]
               }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              style={{ scale: noScale }}
-              onPointerDown={() => teleportNoButton(false)}
-              className={`${CONFIG.colors.noButton} z-50 rounded-full px-10 md:px-12 py-3 md:py-4 text-lg md:text-xl font-bold text-white shadow-xl ring-4 ring-white/40 touch-none select-none`}
+              transition={{ 
+                rotate: { duration: 0.4, repeat: Infinity },
+                scale: { duration: 0.8, repeat: Infinity }
+              }}
+              whileHover={{ scale: yesScale * 1.05, filter: "brightness(1.1)" }}
+              whileTap={{ scale: yesScale * 0.95 }}
+              onClick={handleYesClick}
+              className={`relative z-40 ${CONFIG.colors.yesButton} rounded-full px-10 md:px-16 py-4 md:py-6 text-xl md:text-2xl font-black text-white shadow-2xl ring-4 ring-white/50`}
             >
-              No 💔
+              Yes 💖
             </motion.button>
+          </div>
+
+          {/* Stable No Button Slot */}
+          {!isAccepted && (
+            <div className="flex-1 flex justify-center items-center">
+              <motion.button
+                animate={hasMoved ? { 
+                  left: `${noButtonPos.x}%`, 
+                  top: `${noButtonPos.y}%`,
+                  position: 'fixed' as const,
+                  translateX: "-50%",
+                  translateY: "-50%"
+                } : {
+                  position: 'relative' as const
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                style={{ scale: noScale }}
+                onPointerDown={() => teleportNoButton(false)}
+                className={`${CONFIG.colors.noButton} z-50 rounded-full px-10 md:px-12 py-3 md:py-4 text-lg md:text-xl font-bold text-white shadow-xl ring-4 ring-white/40 touch-none select-none`}
+              >
+                No 💔
+              </motion.button>
+            </div>
           )}
         </div>
       </div>
