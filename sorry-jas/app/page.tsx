@@ -19,10 +19,13 @@ export default function Home() {
   const teleportNoButton = () => {
     if (noClicks >= CONFIG.memeCount) return;
 
-    // Use percentages (10% to 90%) to ensure the button 
-    // stays strictly within the visible viewport on any screen size.
-    const newX = Math.random() * 80 + 10; 
-    const newY = Math.random() * 80 + 10; 
+    let newX, newY;
+    // Keep generating coordinates until we are outside the 
+    // center "dead zone" (40% to 60%) where the Yes button lives.
+    do {
+      newX = Math.random() * 80 + 10;
+      newY = Math.random() * 80 + 10;
+    } while (newX > 40 && newX < 60 && newY > 40 && newY < 60);
 
     setNoButtonPos({ x: newX, y: newY });
     setNoClicks((prev) => prev + 1);
@@ -92,7 +95,7 @@ export default function Home() {
           whileHover={{ scale: yesScale * 1.1 }}
           whileTap={{ scale: yesScale * 0.9 }}
           onClick={handleYesClick}
-          className={`relative z-10 ${CONFIG.colors.yesButton} rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-green-600`}
+          className={`relative z-50 ${CONFIG.colors.yesButton} rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-green-600`}
         >
           Yes 💖
         </motion.button>
@@ -109,14 +112,14 @@ export default function Home() {
             style={{ scale: noScale }}
             onClick={teleportNoButton}
             onTouchStart={teleportNoButton}
-            className={`${hasMoved ? "fixed" : "relative"} ${CONFIG.colors.noButton} z-50 rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-red-600`}
+            className={`${hasMoved ? "fixed" : "relative"} ${CONFIG.colors.noButton} z-40 rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-red-600`}
           >
             No 💔
           </motion.button>
         )}
       </div>
-
     </main>
   );
 }
+
 
