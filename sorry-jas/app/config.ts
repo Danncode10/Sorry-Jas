@@ -19,6 +19,7 @@ export const CONFIG = {
     "Galit ka pa ba? Sorry na nga eh... Huhu 😭",
     "Wag mo na pindutin yan, lalo akong kinakabahan! 😰",
     "Last chance na 'to... Bati na tayo? ❤️",
+    "Bleh! Hindi niya ma-click yung No! Patawarin mo na kasi ako 😝",
   ],
   successMessage: "Yey! I love you! ❤️",
 

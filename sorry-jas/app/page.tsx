@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { CONFIG } from "./config";
@@ -16,9 +16,27 @@ export default function Home() {
   const yesScale = 1 + noClicks * 0.25;
   const noScale = Math.max(0.1, 1 - noClicks * 0.1);
 
+  // Final stage constant
+  const FINAL_STAGE = CONFIG.apologyMessages.length - 1;
+
+  // Automatically move the button in the very last stage
+  useEffect(() => {
+    if (noClicks >= FINAL_STAGE && !isAccepted) {
+      const interval = setInterval(() => {
+        teleportNoButton(true); // pass 'true' to indicate auto-teleport
+      }, 600);
+      return () => clearInterval(interval);
+    }
+  }, [noClicks, isAccepted]);
+
   // Randomly teleport the "No" button
-  const teleportNoButton = () => {
-    if (noClicks >= CONFIG.memeCount) return;
+  const teleportNoButton = (isAuto = false) => {
+    // If it's a manual click and we are already at the final stage, do nothing
+    if (!isAuto && noClicks >= FINAL_STAGE) return;
+    
+    // Stop manual clicks after memeCount but before final ghost stage if configured differently
+    // Actually, let's just let it progress until FINAL_STAGE
+    if (noClicks > FINAL_STAGE) return;
 
     // 1. Get the current occupied space of the YES button
     let forbiddenMinX = 30, forbiddenMaxX = 70, forbiddenMinY = 30, forbiddenMaxY = 70;
@@ -27,7 +45,6 @@ export default function Home() {
       const rect = yesButtonRef.current.getBoundingClientRect();
       const buffer = 40; // Extra padding pixels for safety
       
-      // Convert pixel bounds to viewport percentages
       forbiddenMinX = ((rect.left - buffer) / window.innerWidth) * 100;
       forbiddenMaxX = ((rect.right + buffer) / window.innerWidth) * 100;
       forbiddenMinY = ((rect.top - buffer) / window.innerHeight) * 100;
@@ -36,17 +53,14 @@ export default function Home() {
 
     let newX, newY;
     let attempts = 0;
-    // 2. Keep generating coordinates until we are outside the 
-    // dynamically measured area of the Yes button.
     do {
       newX = Math.random() * 80 + 10;
       newY = Math.random() * 80 + 10;
       attempts++;
-      // Safety break to prevent infinite loops if Yes grows too big
     } while (attempts < 100 && (newX > forbiddenMinX && newX < forbiddenMaxX && newY > forbiddenMinY && newY < forbiddenMaxY));
 
     setNoButtonPos({ x: newX, y: newY });
-    setNoClicks((prev) => prev + 1);
+    if (!isAuto) setNoClicks((prev) => prev + 1);
     setHasMoved(true);
   };
 
@@ -119,7 +133,7 @@ export default function Home() {
           Yes 💖
         </motion.button>
 
-        {noClicks < CONFIG.memeCount && (
+        {!isAccepted && (
           <motion.button
             animate={hasMoved ? { 
               left: `${noButtonPos.x}%`, 
@@ -129,8 +143,8 @@ export default function Home() {
             } : {}}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             style={{ scale: noScale }}
-            onClick={teleportNoButton}
-            onTouchStart={teleportNoButton}
+            onClick={() => teleportNoButton(false)}
+            onTouchStart={() => teleportNoButton(false)}
             className={`${hasMoved ? "fixed" : "relative"} ${CONFIG.colors.noButton} z-50 rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-red-600`}
           >
             No 💔
