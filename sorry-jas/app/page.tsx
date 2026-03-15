@@ -102,7 +102,7 @@ export default function Home() {
           </div>
 
           <h1 className="max-w-md text-3xl font-extrabold text-zinc-800 md:text-4xl">
-            {CONFIG.targetName}, {CONFIG.apologyMessage}
+            {CONFIG.targetName}, {CONFIG.apologyMessages[Math.min(noClicks, CONFIG.apologyMessages.length - 1)]}
           </h1>
         </motion.div>
       </AnimatePresence>

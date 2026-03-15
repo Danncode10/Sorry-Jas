@@ -9,8 +9,17 @@ export const CONFIG = {
   // ── The person you're apologizing to ──────────────────────
   targetName: "Jas",
 
-  // ── Messages shown on the page ────────────────────────────
-  apologyMessage: "Sorry na, patawarin mo na ako 🥺",
+  // ── Messages shown on the page (Progressive) ────────────────
+  apologyMessages: [
+    "Sorry na, patawarin mo na ako 🥺",
+    "Hala, bakit mo pinindot yung No? 👉👈",
+    "Sige na Jas, bati na tayo please? 🍎",
+    "Libre kita ng favorite food mo, bati na tayo? 🍕",
+    "Isang hug lang, okay na ako... Sige na? 🤗",
+    "Galit ka pa ba? Sorry na nga eh... Huhu 😭",
+    "Wag mo na pindutin yan, lalo akong kinakabahan! 😰",
+    "Last chance na 'to... Bati na tayo? ❤️",
+  ],
   successMessage: "Yey! I love you! ❤️",
 
   // ── Number of memes (must match files in public/assets/) ──
