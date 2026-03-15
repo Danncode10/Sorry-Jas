@@ -48,8 +48,19 @@ export default function Home() {
   const [hasMoved, setHasMoved] = useState(false);
   const yesButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Scaling factors
-  const yesScale = 1 + noClicks * 0.25;
+  // Responsive scaling
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Scaling factors - Slightly toned down for mobile
+  const growthFactor = isMobile ? 0.15 : 0.25;
+  const maxYesScale = isMobile ? 2 : 4;
+  const yesScale = Math.min(maxYesScale, 1 + noClicks * growthFactor);
   const noScale = Math.max(0.1, 1 - noClicks * 0.1);
 
   // Constants based on config
@@ -61,7 +72,7 @@ export default function Home() {
   useEffect(() => {
     if (noClicks >= FINAL_STAGE && !isAccepted) {
       const interval = setInterval(() => {
-        teleportNoButton(true); // pass 'true' to indicate auto-teleport
+        teleportNoButton(true);
       }, 600);
       return () => clearInterval(interval);
     }
@@ -69,18 +80,14 @@ export default function Home() {
 
   // Randomly teleport the "No" button
   const teleportNoButton = (isAuto = false) => {
-    // If it's a manual click and we are already at the final stage, do nothing
     if (!isAuto && noClicks >= FINAL_STAGE) return;
-    
-    // Stop manual clicks after meme list is exhausted
     if (noClicks > FINAL_STAGE) return;
 
-    // 1. Get the current occupied space of the YES button
-    let forbiddenMinX = 30, forbiddenMaxX = 70, forbiddenMinY = 30, forbiddenMaxY = 70;
+    let forbiddenMinX = 20, forbiddenMaxX = 80, forbiddenMinY = 20, forbiddenMaxY = 80;
     
     if (yesButtonRef.current) {
       const rect = yesButtonRef.current.getBoundingClientRect();
-      const buffer = 40; // Extra padding pixels for safety
+      const buffer = 30;
       
       forbiddenMinX = ((rect.left - buffer) / window.innerWidth) * 100;
       forbiddenMaxX = ((rect.right + buffer) / window.innerWidth) * 100;
@@ -91,42 +98,35 @@ export default function Home() {
     let newX, newY;
     let attempts = 0;
     do {
+      // Stay away from extreme edges (10% to 90%)
       newX = Math.random() * 80 + 10;
       newY = Math.random() * 80 + 10;
       attempts++;
-    } while (attempts < 100 && (newX > forbiddenMinX && newX < forbiddenMaxX && newY > forbiddenMinY && newY < forbiddenMaxY));
+    } while (attempts < 50 && (newX > forbiddenMinX && newX < forbiddenMaxX && newY > forbiddenMinY && newY < forbiddenMaxY));
 
     setNoButtonPos({ x: newX, y: newY });
     if (!isAuto) setNoClicks((prev) => prev + 1);
     setHasMoved(true);
   };
 
-  const handleYesClick = () => {
-    setIsAccepted(true);
-  };
-
-  // The current meme to display Based on progress
   const currentMemeIndex = Math.min(noClicks, MEME_COUNT - 1);
   const memePath = MEME_LIST[currentMemeIndex];
 
   if (isAccepted) {
     return (
-      <div className={`flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-br from-pink-100 to-rose-200 px-4 text-center overflow-hidden`}>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-pink-100 to-rose-200 px-4 text-center overflow-hidden">
         <FloatingHearts />
         <motion.div
-          initial={{ scale: 0, rotate: -10 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: "spring", damping: 12, stiffness: 100 }}
-          className="relative z-10 glass-card p-8 rounded-3xl shadow-2xl"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="relative z-10 glass-card p-6 md:p-12 rounded-3xl shadow-2xl max-w-full"
         >
           <img
             src={CONFIG.assets.successGif}
             alt="Success"
-            width={500}
-            height={500}
-            className="rounded-2xl shadow-xl mb-6"
+            className="rounded-2xl shadow-xl mb-6 w-full max-w-[300px] md:max-w-[500px] mx-auto"
           />
-          <h1 className="text-4xl md:text-6xl font-black text-pink-600 drop-shadow-md animate-pulse-slow">
+          <h1 className="text-3xl md:text-6xl font-black text-pink-600 animate-pulse-slow">
             {CONFIG.successMessage}
           </h1>
         </motion.div>
@@ -135,55 +135,40 @@ export default function Home() {
   }
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-pink-50 to-rose-100 px-4 py-12">
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-x-hidden bg-gradient-to-br from-pink-50 to-rose-100 px-4 py-8 md:py-12">
       <FloatingHearts />
       
-      <div className="relative z-10 w-full max-w-4xl glass-card p-8 md:p-12 rounded-[2.5rem] shadow-2xl flex flex-col items-center border border-white/50">
+      <div className="relative z-10 w-full max-w-[95vw] md:max-w-4xl glass-card p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl flex flex-col items-center border border-white/50">
         <AnimatePresence mode="wait">
           <motion.div
             key={noClicks}
-            initial={{ opacity: 0, scale: 0.9, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 1.1, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="flex flex-col items-center gap-8 text-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="flex flex-col items-center gap-6 md:gap-8 text-center w-full"
           >
-            <div className="relative">
-              {/* Decorative Hearts */}
-              <motion.span 
-                animate={{ y: [0, -10, 0] }} 
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute -top-6 -left-6 text-4xl hidden md:block"
-              >❤️</motion.span>
-              <motion.span 
-                animate={{ y: [0, 10, 0] }} 
-                transition={{ duration: 2.5, repeat: Infinity }}
-                className="absolute -bottom-6 -right-6 text-4xl hidden md:block"
-              >💖</motion.span>
-
-              <div className="relative w-full max-w-[85vw] md:max-w-xl aspect-square overflow-hidden rounded-3xl shadow-2xl ring-8 ring-white/30">
+            <div className="relative w-full flex justify-center">
+              <div className="relative w-full max-w-[280px] md:max-w-xl aspect-square overflow-hidden rounded-3xl shadow-2xl ring-4 md:ring-8 ring-white/30">
                 <img
                   src={memePath}
-                  alt={`Meme ${currentMemeIndex + 1}`}
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+                  alt="Meme"
+                  className="h-full w-full object-cover"
                 />
               </div>
             </div>
 
-            <h1 className="max-w-md text-3xl font-black text-zinc-800 md:text-5xl leading-tight drop-shadow-sm">
+            <h1 className="w-full text-2xl font-black text-zinc-800 md:text-5xl leading-tight">
               {CONFIG.apologyMessages[Math.min(noClicks, CONFIG.apologyMessages.length - 1)]}
             </h1>
           </motion.div>
         </AnimatePresence>
 
-        <div className="mt-16 flex flex-col items-center justify-center gap-10 sm:flex-row sm:gap-20 w-full">
+        <div className="mt-12 md:mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-20 w-full relative min-h-[150px]">
           <motion.button
             ref={yesButtonRef}
             style={{ scale: yesScale }}
-            whileHover={{ scale: yesScale * 1.05, filter: "brightness(1.1)" }}
-            whileTap={{ scale: yesScale * 0.95 }}
-            onClick={handleYesClick}
-            className={`relative z-40 ${CONFIG.colors.yesButton} rounded-full px-16 py-6 text-2xl font-black text-white shadow-2xl transition-all duration-300 ring-4 ring-white/50 hover:ring-green-300`}
+            onClick={() => setIsAccepted(true)}
+            className={`relative z-40 ${CONFIG.colors.yesButton} rounded-full px-10 md:px-16 py-4 md:py-6 text-xl md:text-2xl font-black text-white shadow-2xl ring-4 ring-white/50`}
           >
             Yes 💖
           </motion.button>
@@ -193,14 +178,20 @@ export default function Home() {
               animate={hasMoved ? { 
                 left: `${noButtonPos.x}%`, 
                 top: `${noButtonPos.y}%`,
+                position: 'fixed' as const,
                 translateX: "-50%",
                 translateY: "-50%"
-              } : {}}
+              } : {
+                position: 'relative' as const
+              }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               style={{ scale: noScale }}
               onClick={() => teleportNoButton(false)}
-              onTouchStart={() => teleportNoButton(false)}
-              className={`${hasMoved ? "fixed" : "relative"} ${CONFIG.colors.noButton} z-50 rounded-full px-12 py-4 text-xl font-bold text-white shadow-xl transition-all duration-300 ring-4 ring-white/40 hover:brightness-110`}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                teleportNoButton(false);
+              }}
+              className={`${CONFIG.colors.noButton} z-50 rounded-full px-10 md:px-12 py-3 md:py-4 text-lg md:text-xl font-bold text-white shadow-xl ring-4 ring-white/40`}
             >
               No 💔
             </motion.button>
@@ -210,3 +201,4 @@ export default function Home() {
     </main>
   );
 }
+
