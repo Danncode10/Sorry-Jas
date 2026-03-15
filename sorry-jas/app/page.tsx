@@ -19,11 +19,10 @@ export default function Home() {
   const teleportNoButton = () => {
     if (noClicks >= CONFIG.memeCount) return;
 
-    // Define safe bounds to keep the button on screen
-    // We use a margin to ensure it doesn't clip the edges
-    const margin = 100;
-    const newX = (Math.random() - 0.5) * (window.innerWidth - margin);
-    const newY = (Math.random() - 0.5) * (window.innerHeight - margin);
+    // Use percentages (10% to 90%) to ensure the button 
+    // stays strictly within the visible viewport on any screen size.
+    const newX = Math.random() * 80 + 10; 
+    const newY = Math.random() * 80 + 10; 
 
     setNoButtonPos({ x: newX, y: newY });
     setNoClicks((prev) => prev + 1);
@@ -100,12 +99,17 @@ export default function Home() {
 
         {noClicks < CONFIG.memeCount && (
           <motion.button
-            animate={hasMoved ? { x: noButtonPos.x, y: noButtonPos.y } : {}}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            animate={hasMoved ? { 
+              left: `${noButtonPos.x}%`, 
+              top: `${noButtonPos.y}%`,
+              translateX: "-50%",
+              translateY: "-50%"
+            } : {}}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             style={{ scale: noScale }}
             onClick={teleportNoButton}
             onTouchStart={teleportNoButton}
-            className={`${hasMoved ? "fixed" : "relative"} ${CONFIG.colors.noButton} rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-red-600`}
+            className={`${hasMoved ? "fixed" : "relative"} ${CONFIG.colors.noButton} z-50 rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-red-600`}
           >
             No 💔
           </motion.button>
@@ -114,3 +118,4 @@ export default function Home() {
     </main>
   );
 }
+
