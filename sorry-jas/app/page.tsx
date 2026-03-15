@@ -130,6 +130,7 @@ export default function Home() {
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false);
   const yesButtonRef = useRef<HTMLButtonElement>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
 
   // Responsive scaling
   const [isMobile, setIsMobile] = useState(false);
@@ -166,28 +167,50 @@ export default function Home() {
     if (!isAuto && noClicks >= FINAL_STAGE) return;
     if (noClicks > FINAL_STAGE) return;
 
-    let forbiddenMinX = 20, forbiddenMaxX = 80, forbiddenMinY = 20, forbiddenMaxY = 80;
+    // Define forbidden zones for BOTH Yes button and Message Text
+    const forbiddenZones: { minX: number; maxX: number; minY: number; maxY: number }[] = [];
     
+    // Zone 1: Yes Button
     if (yesButtonRef.current) {
       const rect = yesButtonRef.current.getBoundingClientRect();
       const buffer = 30;
-      
-      forbiddenMinX = ((rect.left - buffer) / window.innerWidth) * 100;
-      forbiddenMaxX = ((rect.right + buffer) / window.innerWidth) * 100;
-      forbiddenMinY = ((rect.top - buffer) / window.innerHeight) * 100;
-      forbiddenMaxY = ((rect.bottom + buffer) / window.innerHeight) * 100;
+      forbiddenZones.push({
+        minX: ((rect.left - buffer) / window.innerWidth) * 100,
+        maxX: ((rect.right + buffer) / window.innerWidth) * 100,
+        minY: ((rect.top - buffer) / window.innerHeight) * 100,
+        maxY: ((rect.bottom + buffer) / window.innerHeight) * 100,
+      });
+    }
+
+    // Zone 2: Apology Text
+    if (textRef.current) {
+      const rect = textRef.current.getBoundingClientRect();
+      const buffer = 40;
+      forbiddenZones.push({
+        minX: ((rect.left - buffer) / window.innerWidth) * 100,
+        maxX: ((rect.right + buffer) / window.innerWidth) * 100,
+        minY: ((rect.top - buffer) / window.innerHeight) * 100,
+        maxY: ((rect.bottom + buffer) / window.innerHeight) * 100,
+      });
     }
 
     let newX, newY;
     let attempts = 0;
-    do {
-      // Stay away from extreme edges (10% to 90%)
+    let isInsideAnyZone = true;
+
+    while (attempts < 100 && isInsideAnyZone) {
       newX = Math.random() * 80 + 10;
       newY = Math.random() * 80 + 10;
+      
+      isInsideAnyZone = forbiddenZones.some(zone => 
+        newX! > zone.minX && newX! < zone.maxX && 
+        newY! > zone.minY && newY! < zone.maxY
+      );
+      
       attempts++;
-    } while (attempts < 50 && (newX > forbiddenMinX && newX < forbiddenMaxX && newY > forbiddenMinY && newY < forbiddenMaxY));
+    }
 
-    setNoButtonPos({ x: newX, y: newY });
+    setNoButtonPos({ x: newX!, y: newY! });
     if (!isAuto) setNoClicks((prev) => prev + 1);
     setHasMoved(true);
   };
@@ -244,7 +267,7 @@ export default function Home() {
               </div>
             </div>
 
-            <h1 className="w-full text-2xl font-black text-zinc-800 md:text-5xl leading-tight">
+            <h1 ref={textRef} className="w-full text-2xl font-black text-zinc-800 md:text-5xl leading-tight">
               {CONFIG.apologyMessages[Math.min(noClicks, CONFIG.apologyMessages.length - 1)]}
             </h1>
           </motion.div>
