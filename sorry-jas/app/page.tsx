@@ -318,12 +318,11 @@ export default function Home() {
               }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               style={{ scale: noScale }}
-              onClick={() => teleportNoButton(false)}
-              onTouchStart={(e) => {
-                e.preventDefault();
+              onPointerDown={(e) => {
+                // onPointerDown handles both touch and mouse without passive listener issues
                 teleportNoButton(false);
               }}
-              className={`${CONFIG.colors.noButton} z-50 rounded-full px-10 md:px-12 py-3 md:py-4 text-lg md:text-xl font-bold text-white shadow-xl ring-4 ring-white/40`}
+              className={`${CONFIG.colors.noButton} z-50 rounded-full px-10 md:px-12 py-3 md:py-4 text-lg md:text-xl font-bold text-white shadow-xl ring-4 ring-white/40 touch-none select-none`}
             >
               No 💔
             </motion.button>

@@ -32,8 +32,8 @@ export const CONFIG = {
   // ── Asset paths (Local /assets/ folder OR External URLs) ──
   assets: {
     memes: [
-      "https://media.tenor.com/7123T9b_kYsAAAAC/cat-cute.gif",
-      "https://media.tenor.com/p_T5G-2qJmMAAAAC/cat-dance.gif",
+      "/assets/meme1.gif",
+      "/assets/meme2.gif",
       "/assets/meme3.gif",
       "/assets/meme4.gif",
       "/assets/meme5.gif",
@@ -47,7 +47,7 @@ export const CONFIG = {
 
   // ── Sound Effects ─────────────────────────────────────────
   sounds: {
-    teleport: "/assets/sounds/slap.mp3", // Slap sound
+    teleport: "/assets/sounds/rizz.mp3", // Rizz sound
     success: "/assets/sounds/happy.mp3",  // Happy song (looping)
   },
 };
