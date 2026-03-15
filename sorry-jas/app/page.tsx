@@ -213,7 +213,7 @@ export default function Home() {
     setNoButtonPos({ x: newX!, y: newY! });
     if (!isAuto) {
       setNoClicks((prev) => prev + 1);
-      // Play teleport sound
+      // Play slap sound
       new Audio(CONFIG.sounds.teleport).play().catch(() => {});
     }
     setHasMoved(true);
@@ -221,8 +221,10 @@ export default function Home() {
 
   const handleYesClick = () => {
     setIsAccepted(true);
-    // Play success sound
-    new Audio(CONFIG.sounds.success).play().catch(() => {});
+    // Play happy sound in a loop
+    const audio = new Audio(CONFIG.sounds.success);
+    audio.loop = true;
+    audio.play().catch(() => {});
   };
 
   const currentMemeIndex = Math.min(noClicks, MEME_COUNT - 1);

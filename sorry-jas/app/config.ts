@@ -47,7 +47,7 @@ export const CONFIG = {
 
   // ── Sound Effects ─────────────────────────────────────────
   sounds: {
-    teleport: "https://assets.mixkit.co/active_storage/sfx/2747/2747-preview.mp3", // Playful pop
-    success: "https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3",  // Applauding/Cheering
+    teleport: "/assets/sounds/slap.mp3", // Slap sound
+    success: "/assets/sounds/happy.mp3",  // Happy song (looping)
   },
 };
