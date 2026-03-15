@@ -211,8 +211,18 @@ export default function Home() {
     }
 
     setNoButtonPos({ x: newX!, y: newY! });
-    if (!isAuto) setNoClicks((prev) => prev + 1);
+    if (!isAuto) {
+      setNoClicks((prev) => prev + 1);
+      // Play teleport sound
+      new Audio(CONFIG.sounds.teleport).play().catch(() => {});
+    }
     setHasMoved(true);
+  };
+
+  const handleYesClick = () => {
+    setIsAccepted(true);
+    // Play success sound
+    new Audio(CONFIG.sounds.success).play().catch(() => {});
   };
 
   const currentMemeIndex = Math.min(noClicks, MEME_COUNT - 1);
@@ -287,7 +297,7 @@ export default function Home() {
             }}
             whileHover={{ scale: yesScale * 1.05, filter: "brightness(1.1)" }}
             whileTap={{ scale: yesScale * 0.95 }}
-            onClick={() => setIsAccepted(true)}
+            onClick={handleYesClick}
             className={`relative z-40 ${CONFIG.colors.yesButton} rounded-full px-10 md:px-16 py-4 md:py-6 text-xl md:text-2xl font-black text-white shadow-2xl ring-4 ring-white/50`}
           >
             Yes 💖

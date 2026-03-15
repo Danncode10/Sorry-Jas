@@ -32,8 +32,8 @@ export const CONFIG = {
   // ── Asset paths (Local /assets/ folder OR External URLs) ──
   assets: {
     memes: [
-      "/assets/meme1.gif",
-      "/assets/meme2.gif",
+      "https://media.tenor.com/7123T9b_kYsAAAAC/cat-cute.gif",
+      "https://media.tenor.com/p_T5G-2qJmMAAAAC/cat-dance.gif",
       "/assets/meme3.gif",
       "/assets/meme4.gif",
       "/assets/meme5.gif",
@@ -43,5 +43,11 @@ export const CONFIG = {
       "/assets/meme9.gif",
     ],
     successGif: "/assets/success.gif",
+  },
+
+  // ── Sound Effects ─────────────────────────────────────────
+  sounds: {
+    teleport: "https://assets.mixkit.co/active_storage/sfx/2747/2747-preview.mp3", // Playful pop
+    success: "https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3",  // Applauding/Cheering
   },
 };
