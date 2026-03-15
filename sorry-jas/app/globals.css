@@ -22,20 +22,57 @@
   --color-pink-600: #db2777;
   --color-pink-700: #be185d;
 
+  /* Secondary Rose colors */
+  --color-rose-50: #fff1f2;
+  --color-rose-100: #ffe4e6;
+  --color-rose-200: #fecdd3;
+
   /* Button colors (map to CONFIG colors) */
   --color-yes: #22c55e;
-  /* green-500  — yes button */
   --color-no: #ef4444;
-  /* red-500    — no button  */
 
   /* Page background */
   --color-background: var(--color-pink-50);
   --color-foreground: #1f1f1f;
+
+  /* Custom Animations */
+  --animate-float: float 10s ease-in-out infinite;
+  --animate-pulse-slow: pulse-slow 4s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+  }
 }
 
 /* ── Base Styles ─────────────────────────────────────────── */
 body {
-  background-color: var(--color-background);
+  background: linear-gradient(135deg, var(--color-pink-50) 0%, var(--color-rose-100) 100%);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Love-themed Utilities */
+.heart {
+  position: absolute;
+  color: #ec4899;
+  pointer-events: none;
+  z-index: 0;
+  animation: var(--animate-float);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
