@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { CONFIG } from "./config";
@@ -10,6 +10,7 @@ export default function Home() {
   const [isAccepted, setIsAccepted] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false);
+  const yesButtonRef = useRef<HTMLButtonElement>(null);
 
   // Scaling factors
   const yesScale = 1 + noClicks * 0.25;
@@ -19,13 +20,30 @@ export default function Home() {
   const teleportNoButton = () => {
     if (noClicks >= CONFIG.memeCount) return;
 
+    // 1. Get the current occupied space of the YES button
+    let forbiddenMinX = 30, forbiddenMaxX = 70, forbiddenMinY = 30, forbiddenMaxY = 70;
+    
+    if (yesButtonRef.current) {
+      const rect = yesButtonRef.current.getBoundingClientRect();
+      const buffer = 40; // Extra padding pixels for safety
+      
+      // Convert pixel bounds to viewport percentages
+      forbiddenMinX = ((rect.left - buffer) / window.innerWidth) * 100;
+      forbiddenMaxX = ((rect.right + buffer) / window.innerWidth) * 100;
+      forbiddenMinY = ((rect.top - buffer) / window.innerHeight) * 100;
+      forbiddenMaxY = ((rect.bottom + buffer) / window.innerHeight) * 100;
+    }
+
     let newX, newY;
-    // Keep generating coordinates until we are outside the 
-    // center "dead zone" (40% to 60%) where the Yes button lives.
+    let attempts = 0;
+    // 2. Keep generating coordinates until we are outside the 
+    // dynamically measured area of the Yes button.
     do {
       newX = Math.random() * 80 + 10;
       newY = Math.random() * 80 + 10;
-    } while (newX > 40 && newX < 60 && newY > 40 && newY < 60);
+      attempts++;
+      // Safety break to prevent infinite loops if Yes grows too big
+    } while (attempts < 100 && (newX > forbiddenMinX && newX < forbiddenMaxX && newY > forbiddenMinY && newY < forbiddenMaxY));
 
     setNoButtonPos({ x: newX, y: newY });
     setNoClicks((prev) => prev + 1);
@@ -91,11 +109,12 @@ export default function Home() {
 
       <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-12">
         <motion.button
+          ref={yesButtonRef}
           style={{ scale: yesScale }}
           whileHover={{ scale: yesScale * 1.1 }}
           whileTap={{ scale: yesScale * 0.9 }}
           onClick={handleYesClick}
-          className={`relative z-50 ${CONFIG.colors.yesButton} rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-green-600`}
+          className={`relative z-40 ${CONFIG.colors.yesButton} rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-green-600`}
         >
           Yes 💖
         </motion.button>
@@ -112,14 +131,16 @@ export default function Home() {
             style={{ scale: noScale }}
             onClick={teleportNoButton}
             onTouchStart={teleportNoButton}
-            className={`${hasMoved ? "fixed" : "relative"} ${CONFIG.colors.noButton} z-40 rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-red-600`}
+            className={`${hasMoved ? "fixed" : "relative"} ${CONFIG.colors.noButton} z-50 rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-red-600`}
           >
             No 💔
           </motion.button>
         )}
       </div>
+
     </main>
   );
 }
+
 
 
