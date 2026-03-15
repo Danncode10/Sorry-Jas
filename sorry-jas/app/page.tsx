@@ -92,7 +92,7 @@ export default function Home() {
           whileHover={{ scale: yesScale * 1.1 }}
           whileTap={{ scale: yesScale * 0.9 }}
           onClick={handleYesClick}
-          className={`${CONFIG.colors.yesButton} rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-green-600`}
+          className={`relative z-10 ${CONFIG.colors.yesButton} rounded-full px-12 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-green-600`}
         >
           Yes 💖
         </motion.button>
@@ -115,6 +115,7 @@ export default function Home() {
           </motion.button>
         )}
       </div>
+
     </main>
   );
 }
