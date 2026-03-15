@@ -84,8 +84,8 @@ export default function Home() {
           <img
             src={CONFIG.assets.successGif}
             alt="Success"
-            width={400}
-            height={400}
+            width={500}
+            height={500}
             className="rounded-2xl shadow-2xl"
           />
         </motion.div>
@@ -106,21 +106,21 @@ export default function Home() {
           exit={{ opacity: 0, y: -20 }}
           className="flex flex-col items-center gap-8 text-center"
         >
-          <div className="relative h-64 w-64 md:h-80 md:w-80">
+          <div className="relative w-full max-w-[85vw] md:max-w-xl aspect-square">
             <img
               src={memePath}
               alt={`Meme ${currentMemeIndex + 1}`}
-              className="h-full w-full rounded-3xl object-cover shadow-xl"
+              className="h-full w-full rounded-3xl object-cover shadow-2xl"
             />
           </div>
 
-          <h1 className="max-w-md text-3xl font-extrabold text-zinc-800 md:text-4xl">
-            {CONFIG.targetName}, {CONFIG.apologyMessages[Math.min(noClicks, CONFIG.apologyMessages.length - 1)]}
+          <h1 className="max-w-md text-3xl font-extrabold text-zinc-800 md:text-5xl">
+            {CONFIG.apologyMessages[Math.min(noClicks, CONFIG.apologyMessages.length - 1)]}
           </h1>
         </motion.div>
       </AnimatePresence>
 
-      <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-12">
+      <div className="mt-20 flex flex-col items-center justify-center gap-10 sm:flex-row sm:gap-20">
         <motion.button
           ref={yesButtonRef}
           style={{ scale: yesScale }}
