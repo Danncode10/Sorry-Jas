@@ -1,132 +1,95 @@
-# 🌸 Project: "Sorry na Jas" 🌸
+# 🌸 Sorry-Jas: The Ultimate Apology Web App
 
-A playful, interactive **Apology Landing Page** built with **Next.js**, **Tailwind CSS v4**, and **Framer Motion**. Designed to win back "Jas" through the power of memes and an unclickable "No" button.
+A beautiful, interactive, and playful web application built with **Next.js**, **Tailwind CSS v4**, and **Framer Motion**. Designed to win back "Jas" (or anyone special) through the power of memes, interactive "No" buttons, and a whole lot of rizz.
 
-## 🚀 The Concept
+![Preview](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3Amb3A9Zw/On79ZizA_8AAAAAd/happy-happy-happy-cat/giphy.gif)
 
-The site presents a simple question. Every time she tries to click **"No"**, the button shrinks and teleports around the screen while the **"I forgive you"** button grows exponentially. After 8 attempts, the "No" button becomes virtually impossible to catch, and a sequence of memes marks her progress.
+## 🚀 Quick Start (One-Liner)
+
+Want to see it in action immediately? Run this in your terminal:
+
+```bash
+git clone https://github.com/Danncode10/Sorry-Jas.git && cd Sorry-Jas/sorry-jas && npm install && npm run dev
+```
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Customization Guide
 
-| Tool | Purpose |
-|---|---|
-| [Next.js](https://nextjs.org/) (App Router) | Framework |
-| [Tailwind CSS v4](https://tailwindcss.com/) | Styling (CSS-first config) |
-| [Framer Motion](https://www.framer.com/motion/) | Animations |
-| [Vercel](https://vercel.com/) | Deployment |
+All personalizable content lives in a **single config file**. You don't need to touch any component code!
 
----
-
-## ⚡ Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/sorry-jas.git
-cd sorry-jas/sorry-jas
-```
-
-### 2. Install dependencies
-
-```bash
-npm install
-```
-
-### 3. Run the development server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see the page.
-
----
-
-## ✏️ Customization Guide
-
-All personalizable content lives in a **single config file**. You don't need to touch any component code.
-
-### Step 1 — Create `config.ts`
-
-Place this file inside the `app/` folder:
-
-```
-sorry-jas/
-└── app/
-    └── config.ts   ← create this file here
-```
-
-### Step 2 — Edit the config values
+### Edit `sorry-jas/app/config.ts`
 
 ```ts
-// app/config.ts
-const TARGET_NAME = "Jas";
-
 export const CONFIG = {
-  targetName: TARGET_NAME,
+  targetName: "Jas", // Pwede mong palitan kahit anong pangalan
   
   apologyMessages: [
-    `Sorry na ${TARGET_NAME}, patawarin mo na ako 🥺`,
-    "Hala, bakit mo pinindot yung No? 👉👈",
-    // ... add as many as you want!
+    "Sorry na Jas, patawarin mo na ako 🥺",
+    "Joke lang! click Yes na please? 👉👈",
+    // Add as many as you want!
   ],
 
-  successMessage: "Yey! I love you! ❤️",
-
-  colors: {
-    yesButton: "bg-green-500",
-    noButton: "bg-red-500",
-    background: "bg-pink-50",
-  },
+  successMessage: "Yey! bati na kami ❤️ ", // The text on the final screen
 
   assets: {
-    // You can use LOCAL paths (from public/assets/) 
-    // OR EXTERNAL URLs (Tenor, Giphy, etc.)
     memes: [
-      "/assets/meme1.jpg", 
-      "https://media.tenor.com/7123T9b_kYsAAAAC/cat-cute.gif",
-      "https://example.com/your-image.png"
+      "/assets/meme1.gif",  // Local file from public/assets/
+      "https://media.tenor.com/.../cat.gif" // OR External URL!
     ],
-    successGif: "https://media.tenor.com/gO_S-9_v9_MAAAAC/peach-goma-peach-and-goma.gif",
+    successGif: "/assets/success.gif", // Final celebration GIF
   },
+
+  sounds: {
+    teleport: "/assets/sounds/rizz.mp3", // Sound when button escapes
+    success: "/assets/sounds/happy.mp3",  // Lops on success screen
+    lastSlide: "/assets/sounds/last_slide_sound.mp3", // Loops on final plea
+  }
 };
 ```
 
 ---
 
-## 🖼️ How to use Tenor GIFs
+## ✨ Interactive Features
 
-1. Go to [Tenor.com](https://tenor.com/) and find a GIF.
-2. **Right-click** the GIF and select **"Copy Image Address"**.
-   - The link should look like: `https://media.tenor.com/.../anything.gif`
-3. Paste that link directly into the `memes` array in your `config.ts`.
+- **🎮 Anti-No Logic**: The "No" button teleports away and shrinks, while the "Yes" button grows bigger with every click!
+- **💓 Wiggle Animation**: The "Yes" button vigorously wiggles and pulses to attract attention.
+- **🛡️ Collision Detection**: The "No" button is smart—it never teleports on top of the "Yes" button or the message text.
+- **🎹 Sound FX System**: Includes "Rizz" sounds, slap effects, and looping background music for the final plea and success.
+- **🐱 Happy Cat Invasion**: A celebratory screen with a "Cat Army" animation that fills the view when you're forgiven.
+- **📱 Mobile Optimized**: Uses `onPointerDown` and `touch-none` for smooth, responsive interactions on any phone.
+
+---
+
+## 💻 Tech Stack
+
+- **Next.js 15+** (App Router)
+- **Tailwind CSS v4** (Modern CSS-first approach)
+- **Framer Motion** (Smooth & springy animations)
+- **HTML5 Audio API** (Interactive SFX & Looping Music)
 
 ---
 
 ## 📂 Folder Structure
 
 ```text
-sorry-jas/
-├── app/
-│   ├── config.ts       ← ✏️  YOUR customization file
-│   ├── globals.css     ← 🎨  Tailwind v4 theme tokens
-│   ├── layout.tsx
-│   └── page.tsx
-├── public/
-│   └── assets/         ← 🖼️  Place local images here
-├── .gitignore
-├── next.config.ts
-├── package.json
-└── tsconfig.json
+Sorry-Jas/
+├── sorry-jas/
+│   ├── app/
+│   │   ├── config.ts       ← ✏️ CUSTOMIZE HERE
+│   │   ├── globals.css     ← 🎨 THEME COLORS
+│   │   └── page.tsx        ← Core Logic
+│   ├── public/
+│   │   └── assets/         ← 🖼️ PUT MEMES & SOUNDS HERE
+│   └── next.config.ts      ← Next.js settings
+└── README.md
 ```
 
 ---
 
-## 🚀 Deployment (Vercel)
+## 🤝 Contributing & Deployment
 
-1. Push your project to GitHub
-2. Go to [vercel.com](https://vercel.com/) and import the repository
-3. Set the **Root Directory** to `sorry-jas` (the inner folder)
-4. Click **Deploy** — Vercel handles everything automatically ✅
+1. **GitHub**: [Danncode10/Sorry-Jas](https://github.com/Danncode10/Sorry-Jas)
+2. **Deploy**: The easiest way is via [Vercel](https://vercel.com/). Connect your repo and set the **Root Directory** to `sorry-jas`.
+
+**Made with ❤️ by [Danncode10](https://github.com/Danncode10)**

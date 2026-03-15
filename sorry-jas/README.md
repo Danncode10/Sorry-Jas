@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💖 Sorry-Jas: The Ultimate Apology Web App
 
-## Getting Started
+A beautiful, interactive, and playful web application designed to help you say sorry in the most charming way possible. Features dynamic animations, sound effects, and the legendary "Happy Cat Army"!
 
-First, run the development server:
+![Preview](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3p4Z3Amb3A9Zw/On79ZizA_8AAAAAd/happy-happy-happy-cat/giphy.gif)
+
+## 🚀 Quick Start (One-Liner)
+
+Run this command to clone, install, and start the app instantly:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Danncode10/Sorry-Jas.git && cd Sorry-Jas/sorry-jas && npm install && npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Customization Guide
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The entire app is controlled via `app/config.ts`. You don't need to touch the core logic to personalize it!
 
-## Learn More
+### 1. Edit Names & Messages
+Open `sorry-jas/app/config.ts` and update the following:
+- `targetName`: The name of the person you're apologizing to.
+- `apologyMessages`: An array of messages that appear as they click "No".
+- `successMessage`: The final message shown after they click "Yes".
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Change Assets (Memes & Sounds)
+- **Memes**: Add your own GIFs to `public/assets/` and update the `memes` array in `config.ts`. You can also use external URLs!
+- **Sounds**: 
+  - `rizz.mp3`: Plays when the "No" button teleports.
+  - `happy.mp3`: Loops on the success screen.
+  - `last_slide_sound.mp3`: Loops during the final plea slide.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Theme Colors
+Change the `colors` object in `config.ts` using standard Tailwind CSS classes to match her favorite color!
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ✨ Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **🛡️ Anti-No Engine**: The "No" button teleports away from the cursor and automatically avoids the "Yes" button and text area!
+- **📈 Infinite "Yes" Growth**: The "Yes" button grows larger with每 click of "No" until it's impossible to miss.
+- **🐱 Happy Cat Invasion**: A celebratory explosion of bouncing happy cats when the apology is accepted.
+- **🔊 Interactive Audio**: Custom sounds for "Rizz" moments and a looping celebratory theme.
+- **📱 Mobile Responsive**: Fully optimized for phones with smart teleportation logic.
+- **🌫️ Glassmorphism UI**: High-end modern design with soft gradients and floating heart animations.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 💻 Tech Stack
+
+- **Framework**: Next.js 15+ (App Router)
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Icons/Graphics**: Custom CSS + SVG Animations
+
+---
+
+## 🤝 Contributing
+
+Feel free to fork this project and add your own creative twists! If you have better "rizz" sounds or cooler animations, pull requests are welcome.
+
+**Made with ❤️ by [Danncode10](https://github.com/Danncode10)**
