@@ -142,11 +142,15 @@ export default function Home() {
   const MEME_LIST = CONFIG.assets.memes;
   const MEME_COUNT = MEME_LIST.length;
   const FINAL_STAGE = CONFIG.apologyMessages.length - 1;
+  const lastNoInteractionTime = useRef(0);
 
   // 4. Utility Functions
   const teleportNoButton = (isAuto: boolean = false) => {
     if (!isAuto && noClicks >= FINAL_STAGE) return;
     
+    // Track interaction time to prevent accidental "Yes" clicks
+    if (!isAuto) lastNoInteractionTime.current = Date.now();
+
     const forbiddenZones: { minX: number; maxX: number; minY: number; maxY: number }[] = [];
     
     // Zone 1: Yes Button
@@ -199,6 +203,9 @@ export default function Home() {
   };
 
   const handleYesClick = () => {
+    // Prevent accidental clicks immediately after a "No" click (debounce)
+    if (Date.now() - lastNoInteractionTime.current < 400) return;
+
     // Stop last slide audio if it's playing
     if (lastSlideAudioRef.current) {
       lastSlideAudioRef.current.pause();
