@@ -125,18 +125,95 @@ const FloatingCats = () => {
 };
 
 export default function Home() {
+  // 1. State
   const [noClicks, setNoClicks] = useState(0);
   const [isAccepted, setIsAccepted] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false);
   const [isAssetsLoaded, setIsAssetsLoaded] = useState(false);
-  
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 2. Refs
   const yesButtonRef = useRef<HTMLButtonElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const lastSlideAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  // 3. Constants
+  const MEME_LIST = CONFIG.assets.memes;
+  const MEME_COUNT = MEME_LIST.length;
+  const FINAL_STAGE = CONFIG.apologyMessages.length - 1;
+
+  // 4. Utility Functions
+  const teleportNoButton = (isAuto: boolean = false) => {
+    if (!isAuto && noClicks >= FINAL_STAGE) return;
+    
+    const forbiddenZones: { minX: number; maxX: number; minY: number; maxY: number }[] = [];
+    
+    // Zone 1: Yes Button
+    if (yesButtonRef.current) {
+      const rect = yesButtonRef.current.getBoundingClientRect();
+      const buffer = 30;
+      forbiddenZones.push({
+        minX: ((rect.left - buffer) / window.innerWidth) * 100,
+        maxX: ((rect.right + buffer) / window.innerWidth) * 100,
+        minY: ((rect.top - buffer) / window.innerHeight) * 100,
+        maxY: ((rect.bottom + buffer) / window.innerHeight) * 100,
+      });
+    }
+
+    // Zone 2: Apology Text
+    if (textRef.current) {
+      const rect = textRef.current.getBoundingClientRect();
+      const buffer = 40;
+      forbiddenZones.push({
+        minX: ((rect.left - buffer) / window.innerWidth) * 100,
+        maxX: ((rect.right + buffer) / window.innerWidth) * 100,
+        minY: ((rect.top - buffer) / window.innerHeight) * 100,
+        maxY: ((rect.bottom + buffer) / window.innerHeight) * 100,
+      });
+    }
+
+    let nX = 0, nY = 0;
+    let attempts = 0;
+    let isBad = true;
+
+    while (attempts < 100 && isBad) {
+      nX = Math.random() * 80 + 10;
+      nY = Math.random() * 80 + 10;
+      
+      isBad = forbiddenZones.some(z => 
+        nX > z.minX && nX < z.maxX && 
+        nY > z.minY && nY < z.maxY
+      );
+      
+      attempts++;
+    }
+
+    setNoButtonPos({ x: nX, y: nY });
+    if (!isAuto) {
+      setNoClicks((p: number) => p + 1);
+      // Play slap sound
+      new Audio(CONFIG.sounds.teleport).play().catch(() => {});
+    }
+    setHasMoved(true);
+  };
+
+  const handleYesClick = () => {
+    // Stop last slide audio if it's playing
+    if (lastSlideAudioRef.current) {
+      lastSlideAudioRef.current.pause();
+      lastSlideAudioRef.current = null;
+    }
+
+    setIsAccepted(true);
+    // Play happy sound in a loop
+    const audio = new Audio(CONFIG.sounds.success);
+    audio.loop = true;
+    audio.play().catch(() => {});
+  };
+
+  // 5. Effects
   // Responsive scaling
-  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -172,23 +249,39 @@ export default function Home() {
 
       await Promise.all([...imagePromises, ...soundPromises]);
       // Small artificial delay for smooth transition
-      setTimeout(() => setIsAssetsLoaded(true), 800);
+      setTimeout(() => setIsAssetsLoaded(true), 1200);
     };
 
     preloadAssets();
   }, []);
 
+  // Automatically move the button in the very last stage
+  useEffect(() => {
+    if (noClicks >= FINAL_STAGE && !isAccepted && isAssetsLoaded) {
+      // Play last slide sound in loop
+      if (!lastSlideAudioRef.current) {
+        lastSlideAudioRef.current = new Audio(CONFIG.sounds.lastSlide);
+        lastSlideAudioRef.current.loop = true;
+        lastSlideAudioRef.current.play().catch(() => {});
+      }
+
+      const interval = setInterval(() => {
+        teleportNoButton(true);
+      }, 600);
+      return () => clearInterval(interval);
+    }
+    return () => {}; // Return cleanup function even if condition is false
+  }, [noClicks, isAccepted, FINAL_STAGE, isAssetsLoaded]);
+
+  // 6. Derived Values
   // Scaling factors - Slightly toned down for mobile
   const growthFactor = isMobile ? 0.15 : 0.25;
   const maxYesScale = isMobile ? 2 : 4;
   const yesScale = Math.min(maxYesScale, 1 + noClicks * growthFactor);
   const noScale = Math.max(0.1, 1 - noClicks * 0.1);
+  const memePath = MEME_LIST[Math.min(noClicks, MEME_COUNT - 1)];
 
-  // Constants based on config
-  const MEME_LIST = CONFIG.assets.memes;
-  const MEME_COUNT = MEME_LIST.length;
-  const FINAL_STAGE = CONFIG.apologyMessages.length - 1;
-
+  // 7. Conditional Renders (Early Returns)
   if (!isAssetsLoaded) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-pink-50 to-rose-100 text-center">
@@ -249,123 +342,7 @@ export default function Home() {
     );
   }
 
-  // Automatically move the button in the very last stage
-  useEffect(() => {
-    if (noClicks >= FINAL_STAGE && !isAccepted && isAssetsLoaded) {
-      // Play last slide sound in loop
-      if (!lastSlideAudioRef.current) {
-        lastSlideAudioRef.current = new Audio(CONFIG.sounds.lastSlide);
-        lastSlideAudioRef.current.loop = true;
-        lastSlideAudioRef.current.play().catch(() => {});
-      }
-
-      const interval = setInterval(() => {
-        teleportNoButton(true);
-      }, 600);
-      return () => clearInterval(interval);
-    }
-  }, [noClicks, isAccepted, FINAL_STAGE, isAssetsLoaded]);
-
-  // Randomly teleport the "No" button
-  const teleportNoButton = (isAuto = false) => {
-    if (!isAuto && noClicks >= FINAL_STAGE) return;
-    if (noClicks > FINAL_STAGE) return;
-
-    // Define forbidden zones for BOTH Yes button and Message Text
-    const forbiddenZones: { minX: number; maxX: number; minY: number; maxY: number }[] = [];
-    
-    // Zone 1: Yes Button
-    if (yesButtonRef.current) {
-      const rect = yesButtonRef.current.getBoundingClientRect();
-      const buffer = 30;
-      forbiddenZones.push({
-        minX: ((rect.left - buffer) / window.innerWidth) * 100,
-        maxX: ((rect.right + buffer) / window.innerWidth) * 100,
-        minY: ((rect.top - buffer) / window.innerHeight) * 100,
-        maxY: ((rect.bottom + buffer) / window.innerHeight) * 100,
-      });
-    }
-
-    // Zone 2: Apology Text
-    if (textRef.current) {
-      const rect = textRef.current.getBoundingClientRect();
-      const buffer = 40;
-      forbiddenZones.push({
-        minX: ((rect.left - buffer) / window.innerWidth) * 100,
-        maxX: ((rect.right + buffer) / window.innerWidth) * 100,
-        minY: ((rect.top - buffer) / window.innerHeight) * 100,
-        maxY: ((rect.bottom + buffer) / window.innerHeight) * 100,
-      });
-    }
-
-    let newX, newY;
-    let attempts = 0;
-    let isInsideAnyZone = true;
-
-    while (attempts < 100 && isInsideAnyZone) {
-      newX = Math.random() * 80 + 10;
-      newY = Math.random() * 80 + 10;
-      
-      isInsideAnyZone = forbiddenZones.some(zone => 
-        newX! > zone.minX && newX! < zone.maxX && 
-        newY! > zone.minY && newY! < zone.maxY
-      );
-      
-      attempts++;
-    }
-
-    setNoButtonPos({ x: newX!, y: newY! });
-    if (!isAuto) {
-      setNoClicks((prev) => prev + 1);
-      // Play slap sound
-      new Audio(CONFIG.sounds.teleport).play().catch(() => {});
-    }
-    setHasMoved(true);
-  };
-
-  const handleYesClick = () => {
-    // Stop last slide audio if it's playing
-    if (lastSlideAudioRef.current) {
-      lastSlideAudioRef.current.pause();
-      lastSlideAudioRef.current = null;
-    }
-
-    setIsAccepted(true);
-    // Play happy sound in a loop
-    const audio = new Audio(CONFIG.sounds.success);
-    audio.loop = true;
-    audio.play().catch(() => {});
-  };
-
-  const currentMemeIndex = Math.min(noClicks, MEME_COUNT - 1);
-  const memePath = MEME_LIST[currentMemeIndex];
-
-  if (isAccepted) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center success-bg px-4 text-center overflow-hidden relative">
-        <Confetti />
-        <FloatingHearts />
-        <FloatingCats />
-        
-        <motion.div
-           initial={{ scale: 0 }}
-           animate={{ scale: 1 }}
-           transition={{ type: "spring", damping: 10, stiffness: 100 }}
-           className="relative z-10 flex flex-col items-center"
-        >
-          <img
-            src={CONFIG.assets.successGif}
-            alt="Success"
-            className="w-full max-w-[300px] md:max-w-[500px] mx-auto relative z-10 mb-8 drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]"
-          />
-          <h1 className="text-5xl md:text-8xl font-black text-white drop-shadow-[0_5px_15px_rgba(219,39,119,0.8)] animate-pulse-slow">
-            {CONFIG.successMessage}
-          </h1>
-        </motion.div>
-      </div>
-    );
-  }
-
+  // 8. Main Render
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-x-hidden bg-gradient-to-br from-pink-50 to-rose-100 px-4 py-8 md:py-12">
       <FloatingHearts />
@@ -428,10 +405,7 @@ export default function Home() {
               }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               style={{ scale: noScale }}
-              onPointerDown={(e) => {
-                // onPointerDown handles both touch and mouse without passive listener issues
-                teleportNoButton(false);
-              }}
+              onPointerDown={() => teleportNoButton(false)}
               className={`${CONFIG.colors.noButton} z-50 rounded-full px-10 md:px-12 py-3 md:py-4 text-lg md:text-xl font-bold text-white shadow-xl ring-4 ring-white/40 touch-none select-none`}
             >
               No 💔
@@ -442,4 +416,3 @@ export default function Home() {
     </main>
   );
 }
-
