@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Sorry Jas",
-  description: "A bittersweet reflection and time counter since August 24, 2026 at 8:17 PM, preserving the memory of the apology page while facing reality with honesty.",
+  description: "A quiet reflection and time counter, preserving the memory of the apology page while looking forward to chasing dreams.",
   openGraph: {
     title: "Sorry Jas",
-    description: "A bittersweet reflection and time counter since August 24, 2026 at 8:17 PM, preserving the memory of the apology page while facing reality with honesty.",
+    description: "A quiet reflection and time counter, preserving the memory of the apology page while looking forward to chasing dreams.",
   },
 };
 

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Calendar, ArrowRight } from "lucide-react";
+import { Clock, ArrowRight } from "lucide-react";
 import { CONFIG } from "./config";
 
 // --- Visual Effect Components ---
@@ -415,15 +415,9 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="w-full glass-card-dark p-8 sm:p-10 rounded-3xl shadow-2xl border border-slate-800/80 flex flex-col items-center text-center"
           >
-            {/* Breakup date indicator */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-slate-400 mb-6">
-              <Calendar className="w-3.5 h-3.5 text-slate-400" />
-              <span>Since {CONFIG.breakupFormattedDate}</span>
-            </div>
-
             {/* Title */}
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-6">
-              Days Since We Broke Up
+              Days Since
             </h1>
 
             {/* Time Elapsed Counter */}
@@ -465,10 +459,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Direct Honest Statement */}
+            {/* Gentle, uplifting assurance */}
             <div className="w-full py-4 px-5 rounded-2xl bg-slate-900/50 border border-slate-800/60 mb-8">
               <p className="text-sm sm:text-base font-medium text-slate-200 leading-relaxed">
-                &ldquo;We are not together anymore. I chose my dreams, and I am sorry.&rdquo;
+                &ldquo;{CONFIG.realityMessage}&rdquo;
               </p>
             </div>
 
