@@ -8,6 +8,12 @@ export const CONFIG = {
   // ── The person you're apologizing to ──────────────────────
   targetName: TARGET_NAME,
 
+  // ── Breakup Date & Reality Info ───────────────────────────
+  breakupDate: "2026-08-24T20:17:00",
+  breakupFormattedDate: "August 24, 2026, 8:17 PM",
+  realityMessage: "We are not together anymore. I chose my dreams, and I am sorry.",
+  realitySubtext: "I built this website back when all I wanted was to make you smile and fix things between us. But our story has moved on. I had to focus on my path and my dreams, even if it meant letting go. Thank you for the memories.",
+
   // ── Messages shown on the page (Progressive) ────────────────
   apologyMessages: [
     `Sorry na ${TARGET_NAME}, patawarin mo na ako 🥺`,
